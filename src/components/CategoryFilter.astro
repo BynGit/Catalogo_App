@@ -1,0 +1,21 @@
+---
+const categories = [
+  { name: 'Electrodomésticos', icon: '🔌', bg: 'bg-purple-50', text: 'text-purple-700' },
+  { name: 'Hogar', icon: '🛋️', bg: 'bg-blue-50', text: 'text-gray-600' },
+  { name: 'Belleza', icon: '🧴', bg: 'bg-pink-50', text: 'text-gray-600' },
+  { name: 'Cocina', icon: '🍳', bg: 'bg-orange-50', text: 'text-gray-600' },
+  { name: 'Tecnología', icon: '🎧', bg: 'bg-green-50', text: 'text-gray-600' },
+  { name: 'Todos', icon: '⊞', bg: 'bg-gray-100', text: 'text-gray-600' },
+];
+---
+
+<div class="flex gap-4 overflow-x-auto pb-4 mb-8 scrollbar-hide">
+  {categories.map((cat) => (
+    <button class="flex flex-col items-center justify-center min-w-[100px] gap-2 p-4 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow">
+      <div class={`w-12 h-12 rounded-xl flex items-center justify-center text-xl ${cat.bg}`}>
+        {cat.icon}
+      </div>
+      <span class={`text-xs font-medium ${cat.text}`}>{cat.name}</span>
+    </button>
+  ))}
+</div>

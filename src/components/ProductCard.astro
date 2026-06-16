@@ -1,0 +1,20 @@
+---
+interface Props {
+  name: string;
+  price: string;
+  imageBg: string;
+}
+
+const { name, price, imageBg } = Astro.props;
+---
+
+<div class="flex flex-col rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow bg-white">
+  <div class={`h-40 w-full flex items-center justify-center p-4 ${imageBg}`}>
+    <div class="w-24 h-24 bg-black/10 rounded-lg shadow-sm flex items-center justify-center text-gray-500 text-xs">Imagen</div>
+  </div>
+  
+  <div class="p-4">
+    <h3 class="text-sm font-medium text-gray-700 mb-1 line-clamp-1">{name}</h3>
+    <p class="text-lg font-bold text-gray-900">{price}</p>
+  </div>
+</div>
