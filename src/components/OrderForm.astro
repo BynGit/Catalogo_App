@@ -1,0 +1,257 @@
+---
+
+---
+
+<div
+  id="order-form-overlay"
+  class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+>
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">Generar Pedido</h2>
+
+    <form id="order-form" class="space-y-4">
+      <!-- Nombre del cliente -->
+      <div>
+        <label
+          for="customer-name"
+          class="block text-sm font-medium text-gray-700 mb-2"
+        >
+          Nombre del Cliente *
+        </label>
+        <input
+          type="text"
+          id="customer-name"
+          name="customerName"
+          required
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+          placeholder="Ingresa tu nombre"
+        />
+        <span id="name-error" class="text-red-500 text-xs hidden"></span>
+      </div>
+
+      <!-- Teléfono del cliente -->
+      <div>
+        <label
+          for="customer-phone"
+          class="block text-sm font-medium text-gray-700 mb-2"
+        >
+          Teléfono *
+        </label>
+        <input
+          type="tel"
+          id="customer-phone"
+          name="customerPhone"
+          required
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+          placeholder="Ingresa tu teléfono"
+        />
+        <span id="phone-error" class="text-red-500 text-xs hidden"></span>
+      </div>
+
+      <!-- Resumen del carrito -->
+      <div class="bg-gray-50 p-4 rounded-lg max-h-48 overflow-y-auto">
+        <h3 class="font-semibold text-gray-700 mb-3">Resumen del Pedido:</h3>
+        <div id="order-summary" class="space-y-2 text-sm">
+          <!-- Los productos se insertan aquí -->
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="flex gap-3 pt-4">
+        <button
+          type="button"
+          id="form-cancel-btn"
+          class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 rounded-lg transition"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          id="form-submit-btn"
+          class="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Enviar Pedido
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+
+    declare global {
+    interface Window {
+      openOrderForm: () => void;
+    }
+  }
+  const orderFormOverlay = document.getElementById("order-form-overlay")!;
+  const orderForm = document.getElementById("order-form") as HTMLFormElement;
+  const customerNameInput = document.getElementById(
+    "customer-name",
+  ) as HTMLInputElement;
+  const customerPhoneInput = document.getElementById(
+    "customer-phone",
+  ) as HTMLInputElement;
+  const formCancelBtn = document.getElementById("form-cancel-btn")!;
+  const formSubmitBtn = document.getElementById("form-submit-btn")! as HTMLButtonElement;
+  const orderSummary = document.getElementById("order-summary")!;
+
+  const STORAGE_KEY_CUSTOMER = "customer_info";
+  const STORAGE_KEY_CART = "shopping_cart";
+
+  // Cargar datos del cliente desde localStorage
+  function loadCustomerInfo() {
+    const data = localStorage.getItem(STORAGE_KEY_CUSTOMER);
+    return data ? JSON.parse(data) : { name: "", phone: "" };
+  }
+
+  // Guardar datos del cliente en localStorage
+  function saveCustomerInfo(name: string, phone: string) {
+    localStorage.setItem(STORAGE_KEY_CUSTOMER, JSON.stringify({ name, phone }));
+  }
+
+  // Cargar carrito desde localStorage
+  function loadCart(): any[] {
+    const cartData = localStorage.getItem(STORAGE_KEY_CART);
+    return cartData ? JSON.parse(cartData) : [];
+  }
+
+  // Abrir formulario
+  window.openOrderForm = () => {
+    const customerInfo = loadCustomerInfo();
+    customerNameInput.value = customerInfo.name;
+    customerPhoneInput.value = customerInfo.phone;
+
+    // Mostrar resumen del carrito
+    const cart = loadCart();
+    orderSummary.innerHTML = "";
+    cart.forEach((product: any) => {
+      const itemDiv = document.createElement("div");
+      itemDiv.className = "flex justify-between text-gray-700";
+      itemDiv.innerHTML = `
+        <span>${product.nombre}</span>
+        <span class="font-semibold">$${parseInt(product.precio).toLocaleString("es-CO")}</span>
+      `;
+      orderSummary.appendChild(itemDiv);
+    });
+
+    // Agregar total
+    const total = cart.reduce(
+      (sum: number, item: any) => sum + parseInt(item.precio),
+      0,
+    );
+    const totalDiv = document.createElement("div");
+    totalDiv.className =
+      "border-t border-gray-300 pt-3 mt-3 flex justify-between font-bold text-gray-800";
+    totalDiv.innerHTML = `
+      <span>Total:</span>
+      <span>$${total.toLocaleString("es-CO")}</span>
+    `;
+    orderSummary.appendChild(totalDiv);
+
+    orderFormOverlay.classList.remove("hidden");
+  };
+
+  // Cerrar formulario
+  function closeOrderForm() {
+    orderFormOverlay.classList.add("hidden");
+  }
+
+  formCancelBtn.addEventListener("click", closeOrderForm);
+
+  // Validar formulario
+  function validateForm(): boolean {
+    const name = customerNameInput.value.trim();
+    const phone = customerPhoneInput.value.trim();
+    const nameError = document.getElementById("name-error")!;
+    const phoneError = document.getElementById("phone-error")!;
+
+    let isValid = true;
+
+    if (!name) {
+      nameError.textContent = "El nombre es obligatorio";
+      nameError.classList.remove("hidden");
+      isValid = false;
+    } else {
+      nameError.classList.add("hidden");
+    }
+
+    if (!phone) {
+      phoneError.textContent = "El teléfono es obligatorio";
+      phoneError.classList.remove("hidden");
+      isValid = false;
+    } else {
+      phoneError.classList.add("hidden");
+    }
+
+    return isValid;
+  }
+
+  // Enviar formulario
+  orderForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    const name = customerNameInput.value.trim();
+    const phone = customerPhoneInput.value.trim();
+
+    // Guardar datos del cliente
+    saveCustomerInfo(name, phone);
+
+    // Obtener carrito
+    const cart = loadCart();
+
+    if (cart.length === 0) {
+      alert("El carrito está vacío");
+      return;
+    }
+
+    // Deshabilitar botón
+    formSubmitBtn.disabled = true;
+    formSubmitBtn.textContent = "Enviando...";
+
+    try {
+      // Enviar pedido a la API
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          customerName: name,
+          customerPhone: phone,
+          products: cart,
+        }),
+      });
+
+      if (response.ok) {
+        alert("¡Pedido enviado exitosamente!");
+        // Limpiar carrito
+        localStorage.removeItem(STORAGE_KEY_CART);
+        // Cerrar formulario
+        closeOrderForm();
+        // Recargar página
+        window.location.reload();
+      } else {
+        alert("Error al enviar el pedido. Intenta nuevamente.");
+        formSubmitBtn.disabled = false;
+        formSubmitBtn.textContent = "Enviar Pedido";
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error al conectar con el servidor");
+      formSubmitBtn.disabled = false;
+      formSubmitBtn.textContent = "Enviar Pedido";
+    }
+  });
+
+  // Cerrar al hacer click fuera
+  orderFormOverlay.addEventListener("click", (e) => {
+    if (e.target === orderFormOverlay) {
+      closeOrderForm();
+    }
+  });
+</script>
