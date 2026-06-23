@@ -1,14 +1,127 @@
 ---
+
 ---
+
 <div class="relative w-full mb-8">
-  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-    <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+  <div
+    class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"
+  >
+    <svg
+      class="h-5 w-5 text-gray-400"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
     </svg>
   </div>
-  <input 
-    type="text" 
-    placeholder="Buscar productos..." 
+  <input
+    id="search-input"
+    type="text"
+    placeholder="Buscar productos..."
     class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-100 focus:border-purple-400 transition-all text-sm"
   />
 </div>
+
+<script>
+  let searchTimeout: number | undefined;
+  const DEBOUNCE_TIME = 1500; // 1.5 segundos
+
+  const searchInput = document.getElementById(
+    "search-input",
+  ) as HTMLInputElement;
+  const productCards = document.querySelectorAll(
+    "[data-producto-category]",
+  ) as NodeListOf<HTMLElement>;
+  const noResultsMessage = document.getElementById("no-results-message");
+
+  // Función para calcular similitud simple (algoritmo Levenshtein básico)
+  function calculateSimilarity(str1: string, str2: string): number {
+    const s1 = str1.toLowerCase();
+    const s2 = str2.toLowerCase();
+
+    // Si uno está contenido en el otro, es muy similar
+    if (s1.includes(s2) || s2.includes(s1)) {
+      return 1;
+    }
+
+    // Calcular distancia Levenshtein
+    const matrix: number[][] = [];
+
+    for (let i = 0; i <= s2.length; i++) {
+      matrix[i] = [i];
+    }
+
+    for (let j = 0; j <= s1.length; j++) {
+      matrix[0][j] = j;
+    }
+
+    for (let i = 1; i <= s2.length; i++) {
+      for (let j = 1; j <= s1.length; j++) {
+        if (s2.charAt(i - 1) === s1.charAt(j - 1)) {
+          matrix[i][j] = matrix[i - 1][j - 1];
+        } else {
+          matrix[i][j] = Math.min(
+            matrix[i - 1][j - 1] + 1,
+            matrix[i][j - 1] + 1,
+            matrix[i - 1][j] + 1,
+          );
+        }
+      }
+    }
+
+    const distance = matrix[s2.length][s1.length];
+    const maxLength = Math.max(s1.length, s2.length);
+    return 1 - distance / maxLength;
+  }
+
+  function performSearch(searchTerm: string) {
+    if (!searchTerm.trim()) {
+      // Mostrar todos los productos
+      productCards.forEach((card) => {
+        card.style.display = "block";
+      });
+      noResultsMessage!.classList.add("hidden");
+      return;
+    }
+
+    let hasVisibleResults = false;
+    const threshold = 0.6; // Umbral de similitud (60%)
+
+    productCards.forEach((card) => {
+      const productName = card.getAttribute("data-product-name") || "";
+      const similarity = calculateSimilarity(searchTerm, productName);
+
+      if (similarity >= threshold) {
+        card.style.display = "block";
+        hasVisibleResults = true;
+      } else {
+        card.style.display = "none";
+      }
+    });
+
+    // Mostrar u ocultar mensaje de no resultados
+    if (hasVisibleResults) {
+      noResultsMessage!.classList.add("hidden");
+    } else {
+      noResultsMessage!.classList.remove("hidden");
+    }
+  }
+
+  searchInput?.addEventListener("input", (e) => {
+    // Limpiar timeout anterior
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+
+    // Establecer nuevo timeout
+    searchTimeout = window.setTimeout(() => {
+      const searchTerm = (e.target as HTMLInputElement).value;
+      performSearch(searchTerm);
+    }, DEBOUNCE_TIME);
+  });
+</script>

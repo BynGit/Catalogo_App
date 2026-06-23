@@ -13,6 +13,7 @@ const { idProducto, nombre, imagen, categoria, precio } = Astro.props;
 <div
   class="flex flex-col rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow bg-white"
   data-producto-category={categoria}
+  data-product-name={nombre}
 >
   <div class={`h-40 w-full flex items-center justify-center p-4`}>
     <div
