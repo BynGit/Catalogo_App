@@ -1,21 +1,65 @@
 ---
 const categories = [
-  { name: 'Electrodomésticos', icon: '🔌', bg: 'bg-purple-50', text: 'text-purple-700' },
-  { name: 'Hogar', icon: '🛋️', bg: 'bg-blue-50', text: 'text-gray-600' },
-  { name: 'Belleza', icon: '🧴', bg: 'bg-pink-50', text: 'text-gray-600' },
-  { name: 'Cocina', icon: '🍳', bg: 'bg-orange-50', text: 'text-gray-600' },
-  { name: 'Tecnología', icon: '🎧', bg: 'bg-green-50', text: 'text-gray-600' },
-  { name: 'Todos', icon: '⊞', bg: 'bg-gray-100', text: 'text-gray-600' },
+  { name: "Electrodomésticos", icon: "🔌", bg: "bg-purple-50", text: "text-purple-700"},
+  { name: "Hogar", icon: "🛋️", bg: "bg-blue-50", text: "text-gray-600" },
+  { name: "Belleza", icon: "🧴", bg: "bg-pink-50", text: "text-gray-600" },
+  { name: "Cocina", icon: "🍳", bg: "bg-orange-50", text: "text-gray-600" },
+  { name: "Tecnología", icon: "🎧", bg: "bg-green-50", text: "text-gray-600" },
+  { name: "Todos", icon: "⊞", bg: "bg-gray-100", text: "text-gray-600" },
 ];
 ---
 
-<div class="flex gap-4 overflow-x-auto pb-4 mb-8 scrollbar-hide">
-  {categories.map((cat) => (
-    <button class="flex flex-col items-center justify-center min-w-[100px] gap-2 p-4 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow">
-      <div class={`w-12 h-12 rounded-xl flex items-center justify-center text-xl ${cat.bg}`}>
-        {cat.icon}
-      </div>
-      <span class={`text-xs font-medium ${cat.text}`}>{cat.name}</span>
-    </button>
-  ))}
+<div
+  class="flex gap-4 overflow-x-auto pb-2 mb-4 scrollbar-hide"
+  id="category-filter"
+>
+  {
+    categories.map((cat) => (
+      <button
+        data-category={cat.name}
+        class="flex flex-col items-center justify-center min-w-[100px] gap-2 p-2 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow category-btn"
+        data-bg={cat.bg}
+      >
+        <div
+          class={`w-12 h-12 rounded-xl flex items-center justify-center text-xl ${cat.bg}`}
+        >
+          {cat.icon}
+        </div>
+        <span class={`text-xs font-medium ${cat.text}`}>{cat.name}</span>
+      </button>
+    ))
+  }
 </div>
+
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", () => {
+    const filterButtons = document.querySelectorAll(".category-btn");
+    const productCards = document.querySelectorAll("[data-producto-category]");
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const selectedCategory = btn.getAttribute("data-category");
+
+        filterButtons.forEach((b) =>
+          b.classList.remove("ring-1", "ring-blue-500"),
+        );
+        btn.classList.add("ring-1", "ring-blue-500");
+
+        productCards.forEach((card) => {
+          const cardCategory = card.getAttribute("data-producto-category");
+          if (
+            selectedCategory === "Todos" ||
+            cardCategory === selectedCategory
+          ) {
+            card.style.display = "block";
+          } else {
+            card.style.display = "none";
+          }
+        });
+      });
+    });
+
+    const todosBtn = document.querySelector('[data-category="Todos"]');
+    if (todosBtn) todosBtn.click();
+  });
+</script>

@@ -1,20 +1,50 @@
 ---
 interface Props {
-  name: string;
-  price: string;
-  imageBg: string;
+  idProducto: number;
+  nombre: string;
+  imagen: string;
+  categoria: string;
+  precio: string;
 }
 
-const { name, price, imageBg } = Astro.props;
+const { idProducto, nombre, imagen, categoria, precio } = Astro.props;
 ---
 
-<div class="flex flex-col rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow bg-white">
-  <div class={`h-40 w-full flex items-center justify-center p-4 ${imageBg}`}>
-    <div class="w-24 h-24 bg-black/10 rounded-lg shadow-sm flex items-center justify-center text-gray-500 text-xs">Imagen</div>
+<div
+  class="flex flex-col rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow bg-white"
+  data-producto-category={categoria}
+>
+  <div class={`h-40 w-full flex items-center justify-center p-4`}>
+    <div
+      class="w-24 h-24 bg-black/10 rounded-lg shadow-sm flex items-center justify-center text-gray-500 text-xs"
+    >
+      <img
+        src={imagen}
+        alt={`${nombre} - ${idProducto}  `}
+        class="w-full h-full object-contain"
+      />
+    </div>
   </div>
-  
+
   <div class="p-4">
-    <h3 class="text-sm font-medium text-gray-700 mb-1 line-clamp-1">{name}</h3>
-    <p class="text-lg font-bold text-gray-900">{price}</p>
+    <h3 class="text-sm font-medium text-gray-700 mb-2 line-clamp-1">
+      {nombre}
+    </h3>
+    <div class="mb-2">
+      <span
+        class="inline-block px-2 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full"
+      >
+        {categoria}
+      </span>
+    </div>
+    <p class="text-lg font-bold text-gray-900">
+      {
+        new Intl.NumberFormat("es-CO", {
+          style: "currency",
+          currency: "COP",
+          minimumFractionDigits: 0,
+        }).format(parseInt(precio))
+      }
+    </p>
   </div>
 </div>

@@ -1,30 +1,22 @@
 ---
 import "../styles/global.css";
-import Layout from '../layouts/Layout.astro';
-import Sidebar from '../components/Sidebar.astro';
-import SearchBar from '../components/SearchBar.astro';
-import CategoryFilter from '../components/CategoryFilter.astro';
-import ProductCard from '../components/ProductCard.astro';
+import Layout from "../layouts/Layout.astro";
+import Sidebar from "../components/Sidebar.astro";
+import SearchBar from "../components/SearchBar.astro";
+import CategoryFilter from "../components/CategoryFilter.astro";
+import ProductCard from "../components/ProductCard.astro";
 
-
-const products = [
-  { name: 'Freidora de Aire 3.5L', price: '$299.900', bg: 'bg-orange-50' },
-  { name: 'Licuadora 1.5L - 500W', price: '$149.900', bg: 'bg-blue-50' },
-  { name: 'Plancha a Vapor 1400W', price: '$89.900', bg: 'bg-pink-50' },
-  { name: 'Cafetera 12 Tazas', price: '$119.900', bg: 'bg-gray-50' },
-  { name: 'Audífonos Inalámbricos', price: '$99.900', bg: 'bg-green-50' },
-  { name: 'Microondas 20L', price: '$349.900', bg: 'bg-gray-100' },
-  { name: 'Aspiradora 1200W', price: '$239.900', bg: 'bg-purple-50' },
-  { name: 'Arrocera 1.8L', price: '$129.900', bg: 'bg-yellow-50' },
-];
+const response = await fetch(new URL("/api/products", Astro.url));
+const products = response.ok ? await response.json() : [];
 ---
 
 <Layout title="Catálogo de Productos - SGVC">
-  <Sidebar />
-  
+  <!-- <Sidebar /> -->
   <main class="flex-1 flex flex-col p-8 overflow-y-auto bg-white">
     <header class="mb-6">
-      <h2 class="text-3xl font-bold text-gray-800 mb-6">Catálogo de Productos</h2>
+      <h2 class="text-3xl font-bold text-gray-800 mb-6">
+        Catálogo de Productos
+      </h2>
       <SearchBar />
     </header>
 
@@ -34,14 +26,20 @@ const products = [
 
     <section>
       <h3 class="text-lg font-bold text-gray-800 mb-4">Productos</h3>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-8">
-        {products.map((product) => (
-          <ProductCard 
-            name={product.name} 
-            price={product.price} 
-            imageBg={product.bg}
-          />
-        ))}
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-8"
+      >
+        {
+          products.map((product:any) => (
+            <ProductCard
+              idProducto={product.idProducto}
+              nombre={product.nombre}
+              imagen={product.imagen}
+              categoria={product.categoria}
+              precio={product.precio}
+            />
+          ))
+        }
       </div>
     </section>
   </main>
