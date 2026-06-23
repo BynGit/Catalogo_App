@@ -1,43 +1,28 @@
-# Astro Starter Kit: Minimal
+# SGVC - Sistema de Gestión de Ventas por Catálogo 🛍️
 
-```sh
-pnpm create astro@latest -- --template minimal
-```
+## 🎯 Objetivo del Proyecto
+Desarrollar un sistema de información que optimice la gestión de ventas para vendedores por catálogos. Este sistema proporciona a los vendedores una plataforma digital centralizada y eficiente para la exposición, búsqueda y acceso rápido a su inventario de productos.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## ✨ Características Principales
+* **Exploración de Catálogo:** Interfaz principal tipo *grid* (cuadrícula) para visualizar los productos de manera atractiva.
+* **Búsqueda Dinámica:** Barra de búsqueda integrada para localizar productos específicos rápidamente.
+* **Filtrado por Categorías:** Navegación optimizada mediante categorías visuales (Electrodomésticos, Hogar, Belleza, Cocina, Tecnología, etc.).
+* **Tarjetas de Producto Detalladas:** Cada artículo muestra visualmente la imagen, el nombre del producto y su precio.
+* **Navegación Lateral (Sidebar):** Menú intuitivo que permite al usuario cambiar fácilmente entre secciones clave:
+  * Catálogo
+  * Mis Compras
+  * Ofertas
+  * Contáctanos
 
-## 🚀 Project Structure
+## 🛠️ Tecnologías Utilizadas
+* **Framework:** [Astro](https://astro.build/) - Para un rendimiento rápido y una arquitectura basada en componentes.
+* **Estilos:** [Tailwind CSS](https://tailwindcss.com/) - Para el diseño responsivo y el maquetado ágil de la interfaz.
 
-Inside of your Astro project, you'll see the following folders and files:
+## 🚀 Instalación y Ejecución Local
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+Para correr este proyecto en tu máquina local, sigue estos pasos:
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+1. **Clonar el repositorio:**
+   ```bash
+   git clone <url-del-repositorio>
+   cd <nombre-del-directorio>
