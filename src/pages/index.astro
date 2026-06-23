@@ -1,10 +1,10 @@
 ---
 import "../styles/global.css";
 import Layout from "../layouts/Layout.astro";
-import Sidebar from "../components/Sidebar.astro";
 import SearchBar from "../components/SearchBar.astro";
 import CategoryFilter from "../components/CategoryFilter.astro";
 import ProductCard from "../components/ProductCard.astro";
+import ShoppingCart from "../components/ShoppingCart.astro";
 
 const response = await fetch(new URL("/api/products", Astro.url));
 const products = response.ok ? await response.json() : [];
@@ -51,4 +51,5 @@ const products = response.ok ? await response.json() : [];
       </div>
     </section>
   </main>
+  <ShoppingCart />
 </Layout>

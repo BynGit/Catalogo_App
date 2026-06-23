@@ -1,22 +1,70 @@
 ---
 interface Props {
-	title: string;
+  title: string;
 }
 const { title } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="es">
-	<head>
-	<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<title>{title}</title>
-	</head>
-	<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex items-center justify-center p-4">
-		<div class="bg-white w-full max-w-7xl h-[90vh] rounded-3xl shadow-lg border border-gray-100 flex overflow-hidden">
-			<slot />
-		</div>
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title}</title>
+  </head>
+  <body
+    class="bg-gray-50 text-gray-800 font-sans min-h-screen flex items-center justify-center p-4"
+  >
+    <div
+      class="bg-white w-full max-w-7xl h-[90vh] rounded-3xl shadow-lg border border-gray-100 flex overflow-hidden"
+    >
+      <slot />
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const handleAddToCart = (e: Event) => {
+          const btn = e.target as HTMLButtonElement;
+
+          const product = {
+            idProducto: btn.getAttribute("data-product-id"),
+            nombre: btn.getAttribute("data-product-name"),
+            imagen: btn.getAttribute("data-product-image"),
+            categoria: btn.getAttribute("data-product-categoria"),
+            precio: btn.getAttribute("data-product-precio"),
+          };
+
+          if (typeof (window as any).addToCart === "function") {
+            const success = (window as any).addToCart(product);
+            if (success) {
+              // Feedback visual
+              const originalHTML = btn.innerHTML;
+              btn.innerHTML = "✓ Añadido";
+              btn.classList.add("bg-green-600");
+              btn.classList.remove("bg-purple-600", "hover:bg-purple-700");
+
+              setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.classList.remove("bg-green-600");
+                btn.classList.add("bg-purple-600", "hover:bg-purple-700");
+              }, 1500);
+            }
+          }
+        };
+
+        // Delegar evento a todos los botones de añadir al carrito
+        document.addEventListener("click", (e) => {
+          const target = e.target as HTMLElement;
+          const btn = target.closest(
+            ".add-to-cart-btn",
+          ) as HTMLButtonElement | null;
+          if (btn) {
+            handleAddToCart(e);
+          }
+        });
+      });
+    </script>
+  </body>
 </html>

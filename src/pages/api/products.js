@@ -24,14 +24,14 @@ export async function GET({ url }) {
       return {idProducto, nombre, imagen, categoria, precio };
     });
 
-    console.log("Productos obtenidos:", products);
+    // console.log("Productos obtenidos:", products);
 
     return new Response(JSON.stringify(products), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Error al obtener productos:", error);
+    // console.error("Error al obtener productos:", error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
