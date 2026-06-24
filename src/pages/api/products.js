@@ -1,4 +1,7 @@
 // Simple fetch a Google Sheets sin API Key
+
+export const prerender = false;
+
 export async function GET({ url }) {
   const SHEET_CSV_URL = import.meta.env.GOOGLE_SHEET_CSV_URL;
 
