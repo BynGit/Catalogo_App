@@ -8,7 +8,7 @@ import ShoppingCart from "../components/ShoppingCart.astro";
 import OrderForm from "../components/OrderForm.astro";
 import Footer from "../components/Footer.astro";
 
-const response = await fetch(new URL("/api/products", Astro.url));
+const response = await fetch(new URL(`${Astro.url.origin}/api/products`, Astro.url));
 const products = response.ok ? await response.json() : [];
 ---
 
